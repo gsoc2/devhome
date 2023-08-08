@@ -3,22 +3,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Windows.DevHome.SDK;
 using Windows.Foundation;
 
 namespace SamplePlugin;
 
-internal class DevIDProvider : IDevIdProvider
+internal class DevIDProvider : IDeveloperIdProvider
 {
+    public AuthenticationState developerIDState
+    {
+        get => throw new NotImplementedException();
+        set => throw new NotImplementedException();
+    }
+
+#pragma warning disable CS0067 // The events are never used
     public event EventHandler<IDeveloperId> LoggedIn;
 
     public event EventHandler<IDeveloperId> LoggedOut;
 
     public event EventHandler<IDeveloperId> Updated;
+
+    public event TypedEventHandler<IDeveloperIdProvider, object> Changed;
+#pragma warning restore CS0067 // The events are never used
 
     public IEnumerable<IDeveloperId> GetLoggedInDeveloperIds() => throw new NotImplementedException();
 
@@ -40,5 +46,7 @@ internal class DevIDProvider : IDevIdProvider
 
     public string LogoutUI() => throw new NotImplementedException();
 
-    IAsyncOperation<IDeveloperId> IDevIdProvider.LoginNewDeveloperIdAsync() => throw new NotImplementedException();
+    public AuthenticationExperienceKind GetAuthenticationExperienceKind() => throw new NotImplementedException();
+
+    public IAsyncOperation<IDeveloperId> LoginNewDeveloperIdAsync() => throw new NotImplementedException();
 }

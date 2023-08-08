@@ -12,7 +12,8 @@ namespace Microsoft.Windows.DevHome.SDK
         SetupFlow = 3,
         Widget = 4,
         DevDoctor = 5,
-        Notifications = 6
+        Notifications = 6,
+        FeaturedApplications = 7,
     };
     
     [contract(Microsoft.Windows.DevHome.SDK.DevHomeContract, 1)] 
@@ -146,5 +147,17 @@ namespace Microsoft.Windows.DevHome.SDK
         String Url();
     };
 
+    interface IFeaturedApplicationProvider
+    {
+        Windows.Foundation.IAsyncOperation<Windows.Foundation.Collections.IVectorView<IFeaturedApplicationGroup> *> GetFeaturedApplicationGroupsAsync();
+    };
 
+    interface IFeaturedApplicationGroup
+    {
+        String GetTitle(String preferredlocale);
+
+        String GetDescription(String preferredlocale);
+
+        Windows.Foundation.Collections.IVectorView<String> GetApplications();
+    };
 }

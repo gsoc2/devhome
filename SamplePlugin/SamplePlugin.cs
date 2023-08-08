@@ -38,7 +38,7 @@ public sealed class SamplePlugin : IPlugin
     {
         switch (providerType)
         {
-            case ProviderType.DevId:
+            case ProviderType.DeveloperId:
                 return new DevIDProvider();
             case ProviderType.Repository:
                 return new RepositoryProvider();
@@ -51,5 +51,4 @@ public sealed class SamplePlugin : IPlugin
     {
         this._pluginDisposedEvent.Set();
     }
-
 }

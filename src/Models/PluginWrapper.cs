@@ -27,6 +27,7 @@ public class PluginWrapper : IPluginWrapper
         [typeof(ISettingsProvider)] = ProviderType.Settings,
         [typeof(IDevDoctorProvider)] = ProviderType.DevDoctor,
         [typeof(ISetupFlowProvider)] = ProviderType.SetupFlow,
+        [typeof(IFeaturedApplicationProvider)] = ProviderType.FeaturedApplications,
     };
 
     private IPlugin? _pluginObject;
