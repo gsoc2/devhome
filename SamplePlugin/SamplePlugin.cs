@@ -42,6 +42,8 @@ public sealed class SamplePlugin : IPlugin
                 return new DevIDProvider();
             case ProviderType.Repository:
                 return new RepositoryProvider();
+            case ProviderType.FeaturedApplications:
+                return new FeaturedApplicationProvider();
             default:
                 return null;
         }
