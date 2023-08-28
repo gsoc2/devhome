@@ -240,6 +240,7 @@ public partial class DashboardView : ToolPage
             }
 
             // Now that we've ordered the widgets, put them in their final collection.
+            // The insertions are not truly async, since we want the widgets to go into the collection in the right order.
             var finalPlace = 0;
             foreach (var orderedWidget in restoredWidgetsWithPosition)
             {
@@ -480,7 +481,7 @@ public partial class DashboardView : ToolPage
         }
     }
 
-    private async void PinnedWidgetsPropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void PinnedWidgetsPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName.Equals(nameof(WidgetViewModel.IsInEditMode), StringComparison.Ordinal))
         {
@@ -489,45 +490,24 @@ public partial class DashboardView : ToolPage
             {
                 // If the WidgetControl has marked this widget as in edit mode, bring up the edit widget dialog.
                 Log.Logger()?.ReportInfo("DashboardView", $"EditWidget {widgetViewModel.Widget.Id}");
-                await EditWidget(widgetViewModel);
+                ////await EditWidget(widgetViewModel);
             }
         }
     }
 
-    // We can't truly edit a widget once it has been pinned. Instead, simulate editing by
-    // removing the old widget and creating a new one.
     private async Task EditWidget(WidgetViewModel widgetViewModel)
     {
-        // Get info about the widget we're "editing".
-        var index = PinnedWidgets.IndexOf(widgetViewModel);
-        var originalSize = widgetViewModel.WidgetSize;
+        // Get info about the widget we're editing.
         var widgetDef = _widgetCatalog.GetWidgetDefinition(widgetViewModel.Widget.DefinitionId);
 
         var configurationRenderer = await GetConfigurationRendererAsync();
-        var dialog = new CustomizeWidgetDialog(_widgetHost, _widgetCatalog, configurationRenderer, _dispatcher, widgetDef)
+        var dialog = new CustomizeWidgetDialog(widgetViewModel, _widgetCatalog, configurationRenderer, _dispatcher, widgetDef)
         {
             // XamlRoot must be set in the case of a ContentDialog running in a Desktop app.
             XamlRoot = this.XamlRoot,
             RequestedTheme = this.ActualTheme,
         };
         _ = await dialog.ShowAsync();
-
-        var newWidget = dialog.EditedWidget;
-
-        if (newWidget != null)
-        {
-            // Remove and delete the old widget.
-            var state = await widgetViewModel.Widget.GetCustomStateAsync();
-            PinnedWidgets.RemoveAt(index);
-            await widgetViewModel.Widget.DeleteAsync();
-
-            // Put the old widget's state on the new widget.
-            await newWidget.SetCustomStateAsync(state);
-
-            // Set the original size on the new widget and add it to the list.
-            await newWidget.SetSizeAsync(originalSize);
-            await InsertWidgetInPinnedWidgetsAsync(newWidget, originalSize, index);
-        }
 
         widgetViewModel.IsInEditMode = false;
     }
