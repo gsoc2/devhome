@@ -34,7 +34,7 @@ public static class Deployment
             }
             catch (Exception ex)
             {
-                // We do not want this identifer's access to ever create a problem in the
+                // We do not want this identifier's access to ever create a problem in the
                 // application, so if we can't get it, return empty guid. An empty guid is also a
                 // signal that the data is unknown for filtering purposes.
                 GlobalLog.Logger?.ReportError($"Failed getting Deployment Identifier", ex);
